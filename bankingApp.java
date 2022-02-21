@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class bankingApp {
 
-    public static String readFile(String filename) {
+    private static String readFile(String filename) {
         String data = "";
         try {
             File myFile = new File(filename);
@@ -17,28 +17,38 @@ public class bankingApp {
             // System.out.println(data);
             myReader.close();
             return data;
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         return data;
     }
 
-    public static float deposit(float depositMoney, float currentBalance) {
+    private static float deposit(float depositMoney, float currentBalance) {
         float newBalance = currentBalance + depositMoney;
-        try{
+        try {
             FileWriter myWriter = new FileWriter("balance.txt");
             String balanceToBeWritten = Float.toString(newBalance);
             myWriter.write(balanceToBeWritten);
             myWriter.close();
-        }catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return newBalance;
     }
 
-    public static float withdraw(float withdrawMoney, float currentBalance) {
-        return currentBalance -= withdrawMoney;
+    private static float withdraw(float withdrawMoney, float currentBalance) {
+        float newBalance = currentBalance - withdrawMoney;
+        try{
+            FileWriter myWriter = new FileWriter("balance.txt");
+            String balanceToBeWritten = Float.toString(newBalance);
+            myWriter.write(balanceToBeWritten);
+            myWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return newBalance;
     }
+
     public static void main(String[] args) {
         Scanner scannerObj = new Scanner(System.in);
         float balance = 0f;
@@ -76,6 +86,7 @@ public class bankingApp {
                     break;
                 }
                 case 3: {
+                    System.out.println("How much would you like to withdraw?: ");
                     float moneyToWithdraw = scannerObj.nextFloat();
                     balance = Float.parseFloat(readFile("balance.txt"));
                     balance = withdraw(moneyToWithdraw, balance);
@@ -87,7 +98,7 @@ public class bankingApp {
                     System.exit(1);
                 }
                 default: {
-                    System.out.println("Not a valid option, please choose between 1, 2, 3.");
+                    System.out.println("Not a valid option, please choose between 1, 2, 3, 4.");
                     break;
                 }
             }
