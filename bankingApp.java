@@ -2,13 +2,38 @@ package bankingApp;
 
 import java.util.Scanner;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class bankingApp {
 
+    public static String readFile(String filename) {
+        String data = "";
+        try {
+            File myFile = new File(filename);
+            Scanner myReader = new Scanner(myFile);
+            data = myReader.nextLine();
+            // System.out.println(data);
+            myReader.close();
+            return data;
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
     public static float deposit(float depositMoney, float currentBalance) {
-        return currentBalance += depositMoney;
+        float newBalance = currentBalance + depositMoney;
+        try{
+            FileWriter myWriter = new FileWriter("balance.txt");
+            String balanceToBeWritten = Float.toString(newBalance);
+            myWriter.write(balanceToBeWritten);
+            myWriter.close();
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+        return newBalance;
     }
 
     public static float withdraw(float withdrawMoney, float currentBalance) {
@@ -27,6 +52,7 @@ public class bankingApp {
                 myWriter.close();
             } else {
                 System.out.println("File already exists.");
+                balance = Float.parseFloat(readFile("balance.txt"));
             }
         } catch (IOException e) {
             System.out.println("Error occured");
@@ -44,12 +70,14 @@ public class bankingApp {
                 case 2: {
                     System.out.println("How much would you like to deposit?: ");
                     float moneyToDeposit = scannerObj.nextFloat();
+                    balance = Float.parseFloat(readFile("balance.txt"));
                     balance = deposit(moneyToDeposit, balance);
                     System.out.println(String.format("%.2f", balance));
                     break;
                 }
                 case 3: {
                     float moneyToWithdraw = scannerObj.nextFloat();
+                    balance = Float.parseFloat(readFile("balance.txt"));
                     balance = withdraw(moneyToWithdraw, balance);
                     System.out.println(String.format("%.2f", balance));
                     break;
